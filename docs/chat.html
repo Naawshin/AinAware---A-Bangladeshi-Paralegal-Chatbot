@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chat — AinAware Legal Assistant</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green: #1a6b3c; --green-light: #2e8b57;
+      --cream: #fdf8f0; --ink: #1c1c1c;
+      --muted: #6b6b6b; --border: #e4ddd0;
+    }
+    html, body { height: 100%; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); display: flex; flex-direction: column; }
+
+    /* TOP BAR */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.9rem 1.8rem;
+      background: var(--green);
+      flex-shrink: 0;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 0.9rem; }
+    .back-btn {
+      display: flex; align-items: center; gap: 0.4rem;
+      color: rgba(255,255,255,0.8); text-decoration: none;
+      font-size: 0.85rem; font-weight: 500;
+      padding: 0.4rem 0.8rem; border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.25);
+      transition: background 0.2s, color 0.2s;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+    .topbar-title { display: flex; align-items: center; gap: 0.7rem; }
+    .topbar-avatar { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+    .topbar-name { color: #fff; font-weight: 600; font-size: 0.97rem; }
+    .topbar-status { color: rgba(255,255,255,0.7); font-size: 0.75rem; display: flex; align-items: center; gap: 0.35rem; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 5px #4ade80; animation: pulse 2s infinite; }
+    .topbar-right { display: flex; align-items: center; gap: 0.5rem; }
+    .clear-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.85); padding: 0.4rem 0.9rem; border-radius: 6px; font-size: 0.8rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s; }
+    .clear-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
+
+    /* MESSAGES */
+    #messages {
+      flex: 1; overflow-y: auto; padding: 1.8rem;
+      display: flex; flex-direction: column; gap: 1.2rem;
+      scroll-behavior: smooth;
+      background:
+        radial-gradient(ellipse 60% 40% at 80% 10%, rgba(26,107,60,0.04) 0%, transparent 60%),
+        var(--cream);
+    }
+    #messages::-webkit-scrollbar { width: 5px; }
+    #messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .msg { display: flex; flex-direction: column; max-width: 72%; }
+    .msg.user { align-self: flex-end; align-items: flex-end; }
+    .msg.bot  { align-self: flex-start; align-items: flex-start; }
+
+    .msg-row { display: flex; align-items: flex-end; gap: 0.6rem; }
+    .msg.user .msg-row { flex-direction: row-reverse; }
+
+    .bot-icon { width: 30px; height: 30px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; margin-bottom: 2px; }
+
+    .msg-bubble {
+      padding: 0.85rem 1.15rem; border-radius: 16px;
+      font-size: 0.92rem; line-height: 1.65;
+      white-space: pre-wrap; word-break: break-word;
+    }
+    .msg.user .msg-bubble { background: var(--green); color: #fff; border-bottom-right-radius: 4px; }
+    .msg.bot  .msg-bubble { background: #fff; border: 1px solid var(--border); color: var(--ink); border-bottom-left-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+
+    .msg-time { font-size: 0.7rem; color: var(--muted); margin-top: 0.3rem; padding: 0 0.2rem; }
+
+    .typing-indicator { display: flex; align-items: center; gap: 5px; padding: 0.85rem 1.15rem; background: #fff; border: 1px solid var(--border); border-radius: 16px; border-bottom-left-radius: 4px; width: fit-content; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .typing-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); animation: typingBounce 1.2s infinite; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    /* SUGGESTIONS (shown only when chat is empty) */
+    .suggestions {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.7rem;
+      max-width: 560px; margin: auto auto 0;
+      width: 100%;
+      animation: fadeUp 0.4s ease both;
+    }
+    .suggestion-chip {
+      background: #fff; border: 1px solid var(--border); border-radius: 10px;
+      padding: 0.8rem 1rem; font-size: 0.85rem; color: var(--ink);
+      cursor: pointer; text-align: left; font-family: 'DM Sans', sans-serif;
+      transition: border-color 0.2s, color 0.2s, transform 0.15s;
+      display: flex; gap: 0.5rem; align-items: flex-start;
+    }
+    .suggestion-chip:hover { border-color: var(--green); color: var(--green); transform: translateY(-1px); }
+    .suggestions-label { text-align: center; color: var(--muted); font-size: 0.82rem; margin-bottom: 0.5rem; grid-column: 1/-1; }
+
+    /* INPUT BAR */
+    .input-bar {
+      padding: 1rem 1.5rem 1.2rem;
+      border-top: 1px solid var(--border);
+      background: #fff; flex-shrink: 0;
+    }
+    .input-row { display: flex; gap: 0.7rem; align-items: flex-end; max-width: 860px; margin-inline: auto; }
+    #chat-input {
+      flex: 1; border: 1.5px solid var(--border); border-radius: 12px;
+      padding: 0.8rem 1.1rem; font-family: 'DM Sans', sans-serif;
+      font-size: 0.93rem; color: var(--ink); background: var(--cream);
+      resize: none; outline: none; min-height: 46px; max-height: 130px;
+      transition: border-color 0.2s; line-height: 1.5;
+    }
+    #chat-input:focus { border-color: var(--green); }
+    #chat-input::placeholder { color: var(--muted); }
+    #send-btn {
+      width: 46px; height: 46px; border-radius: 12px; border: none;
+      background: var(--green); color: #fff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; transition: background 0.2s, transform 0.15s; flex-shrink: 0;
+    }
+    #send-btn:hover:not(:disabled) { background: var(--green-light); transform: scale(1.05); }
+    #send-btn:disabled { background: var(--border); cursor: not-allowed; }
+    .input-hint { text-align: center; font-size: 0.72rem; color: var(--muted); margin-top: 0.5rem; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+    @keyframes typingBounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-5px); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    @media (max-width: 600px) {
+      .topbar { padding: 0.8rem 1rem; }
+      #messages { padding: 1.2rem; }
+      .msg { max-width: 88%; }
+      .suggestions { grid-template-columns: 1fr; }
+      .input-bar { padding: 0.8rem 1rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="back-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M5 12l7-7M5 12l7 7"/></svg>
+      Back
+    </a>
+    <div class="topbar-title">
+      <div class="topbar-avatar">⚖️</div>
+      <div>
+        <div class="topbar-name">AinAware Legal Assistant</div>
+        <div class="topbar-status"><span class="status-dot"></span> Online</div>
+      </div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <button class="clear-btn" onclick="clearChat()">Clear chat</button>
+  </div>
+</div>
+
+<!-- MESSAGES -->
+<div id="messages">
+  <!-- Welcome message -->
+  <div class="msg bot" id="welcome-msg">
+    <div class="msg-row">
+      <div class="bot-icon">⚖️</div>
+      <div class="msg-bubble">আসসালামু আলাইকুম! 👋 I'm AinAware, your Bangladeshi legal assistant.<br/><br/>Ask me anything about Bangladeshi law — your rights, court procedures, family law, property, business registration, and more. I'll answer in plain language with references to the relevant laws.</div>
+    </div>
+    <div class="msg-time">AinAware</div>
+  </div>
+
+  <!-- Suggestion chips (hidden after first message) -->
+  <div class="suggestions" id="suggestions">
+    <div class="suggestions-label">💡 Try one of these questions</div>
+    <button class="suggestion-chip" onclick="sendMessage('What are my rights if I am arrested?')">🔒 What are my rights if I am arrested?</button>
+    <button class="suggestion-chip" onclick="sendMessage('How do I file a case in court?')">⚖️ How do I file a case in court?</button>
+    <button class="suggestion-chip" onclick="sendMessage('What are tenant rights in Bangladesh?')">🏠 What are tenant rights in Bangladesh?</button>
+    <button class="suggestion-chip" onclick="sendMessage('What is the punishment for theft under Bangladeshi law?')">💼 What is the punishment for theft?</button>
+  </div>
+</div>
+
+<!-- INPUT BAR -->
+<div class="input-bar">
+  <div class="input-row">
+    <textarea id="chat-input" placeholder="Ask a legal question…" rows="1"></textarea>
+    <button id="send-btn" title="Send">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+    </button>
+  </div>
+  <div class="input-hint">Press Enter to send · Shift+Enter for new line · ⚠️ Not a substitute for professional legal advice</div>
+</div>
+
+<script type="module">
+  import { Client } from "https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js";
+
+  const messagesEl  = document.getElementById('messages');
+  const inputEl     = document.getElementById('chat-input');
+  const sendBtn     = document.getElementById('send-btn');
+  const suggestEl   = document.getElementById('suggestions');
+  let   firstMsg    = true;
+
+  function getTime() {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function appendMessage(role, text) {
+    if (firstMsg && role === 'user') {
+      suggestEl.style.display = 'none';
+      firstMsg = false;
+    }
+    const div = document.createElement('div');
+    div.className = `msg ${role}`;
+    const safe = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+    if (role === 'bot') {
+      div.innerHTML = `
+        <div class="msg-row">
+          <div class="bot-icon">⚖️</div>
+          <div class="msg-bubble">${safe}</div>
+        </div>
+        <div class="msg-time">AinAware · ${getTime()}</div>`;
+    } else {
+      div.innerHTML = `
+        <div class="msg-row"><div class="msg-bubble">${safe}</div></div>
+        <div class="msg-time">You · ${getTime()}</div>`;
+    }
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function showTyping() {
+    const div = document.createElement('div');
+    div.className = 'msg bot'; div.id = 'typing';
+    div.innerHTML = `<div class="msg-row"><div class="bot-icon">⚖️</div><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>`;
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function removeTyping() {
+    const el = document.getElementById('typing');
+    if (el) el.remove();
+  }
+
+  window.sendMessage = async function(question) {
+    question = question || inputEl.value;
+    if (!question.trim()) return;
+    sendBtn.disabled = true;
+    inputEl.disabled = true;
+    appendMessage('user', question);
+    inputEl.value = '';
+    inputEl.style.height = 'auto';
+    showTyping();
+
+    try {
+      const client = await Client.connect("goldphish2209/AinAware__Bangladeshi_Paralegal_Chatbot");
+      const result = await client.predict("/question_answering", { question });
+      removeTyping();
+      const answer = result.data[0] || "Sorry, I couldn't get a response. Please try again.";
+      appendMessage('bot', answer);
+    } catch (err) {
+      removeTyping();
+      appendMessage('bot', "⚠️ The assistant is waking up — this can take ~30 seconds on first load. Please try again in a moment.");
+    }
+
+    sendBtn.disabled = false;
+    inputEl.disabled = false;
+    inputEl.focus();
+  }
+
+  window.clearChat = function() {
+    // Remove everything except welcome msg and suggestions
+    const allMsgs = messagesEl.querySelectorAll('.msg:not(#welcome-msg)');
+    allMsgs.forEach(m => m.remove());
+    suggestEl.style.display = 'grid';
+    firstMsg = true;
+  }
+
+  sendBtn.addEventListener('click', () => sendMessage(inputEl.value));
+  inputEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(inputEl.value); }
+  });
+  inputEl.addEventListener('input', () => {
+    inputEl.style.height = 'auto';
+    inputEl.style.height = Math.min(inputEl.scrollHeight, 130) + 'px';
+  });
+
+  // Auto-send if a question was passed via URL param (from landing page chips)
+  const params = new URLSearchParams(window.location.search);
+  const preQ = params.get('q');
+  if (preQ) {
+    setTimeout(() => sendMessage(decodeURIComponent(preQ)), 600);
+  }
+
+  inputEl.focus();
+</script>
+</body>
+</html>
