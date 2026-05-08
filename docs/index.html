@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AinAware — Bangladeshi Legal Assistant</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:   #1a6b3c;
+      --green-light: #2e8b57;
+      --red:     #c0392b;
+      --gold:    #c9a84c;
+      --cream:   #fdf8f0;
+      --ink:     #1c1c1c;
+      --muted:   #6b6b6b;
+      --card-bg: #ffffff;
+      --border:  #e4ddd0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: rgba(253,248,240,0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; font-weight: 700; color: var(--green);
+      text-decoration: none;
+    }
+    .nav-logo .flag { font-size: 1.5rem; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--muted);
+      font-size: 0.9rem; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--green); }
+    .nav-cta {
+      background: var(--green); color: #fff;
+      padding: 0.55rem 1.4rem; border-radius: 6px;
+      text-decoration: none; font-size: 0.9rem; font-weight: 500;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .nav-cta:hover { background: var(--green-light); transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(26,107,60,0.08) 0%, transparent 70%),
+        var(--cream);
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 39px, var(--border) 39px, var(--border) 40px),
+        repeating-linear-gradient(90deg, transparent, transparent 39px, var(--border) 39px, var(--border) 40px);
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .hero-inner { position: relative; max-width: 760px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(26,107,60,0.1); border: 1px solid rgba(26,107,60,0.25);
+      color: var(--green); border-radius: 100px;
+      padding: 0.35rem 1rem; font-size: 0.8rem; font-weight: 500;
+      margin-bottom: 1.8rem;
+      animation: fadeUp 0.6s ease both;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.6rem, 6vw, 4.2rem);
+      font-weight: 700; line-height: 1.15;
+      color: var(--ink);
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    .hero h1 span { color: var(--green); }
+    .hero-sub {
+      margin-top: 1.2rem;
+      font-size: 1.05rem; color: var(--muted); line-height: 1.7;
+      max-width: 540px; margin-inline: auto;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+    .hero-actions {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+      margin-top: 2.4rem;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+    .btn-primary {
+      background: var(--green); color: #fff;
+      padding: 0.85rem 2rem; border-radius: 8px;
+      text-decoration: none; font-weight: 500; font-size: 1rem;
+      display: flex; align-items: center; gap: 0.5rem;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(26,107,60,0.25);
+    }
+    .btn-primary:hover { background: var(--green-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,107,60,0.3); }
+    .btn-secondary {
+      background: transparent; color: var(--ink);
+      padding: 0.85rem 2rem; border-radius: 8px;
+      text-decoration: none; font-weight: 500; font-size: 1rem;
+      border: 1.5px solid var(--border);
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .btn-secondary:hover { border-color: var(--green); color: var(--green); transform: translateY(-2px); }
+
+    .hero-scroll {
+      margin-top: 4rem;
+      display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+      color: var(--muted); font-size: 0.8rem;
+      animation: fadeUp 0.6s 0.5s ease both;
+    }
+    .scroll-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green); opacity: 0.5;
+      animation: bounce 1.6s infinite;
+    }
+
+    /* ── STATS ── */
+    .stats {
+      display: flex; justify-content: center; flex-wrap: wrap; gap: 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: #fff;
+    }
+    .stat {
+      flex: 1; min-width: 160px;
+      text-align: center; padding: 2.2rem 1.5rem;
+      border-right: 1px solid var(--border);
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .stat:last-child { border-right: none; }
+    .stat.visible { opacity: 1; transform: none; }
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem; font-weight: 700; color: var(--green);
+    }
+    .stat-label { font-size: 0.85rem; color: var(--muted); margin-top: 0.3rem; }
+
+    /* ── SECTION COMMONS ── */
+    section { padding: 5rem 2rem; }
+    .section-label {
+      font-size: 0.75rem; font-weight: 500; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--green);
+      margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700; line-height: 1.2;
+      max-width: 520px;
+    }
+    .section-sub {
+      color: var(--muted); font-size: 0.97rem; line-height: 1.7;
+      max-width: 480px; margin-top: 0.8rem;
+    }
+    .container { max-width: 1100px; margin-inline: auto; }
+
+    /* ── FEATURES ── */
+    .features { background: var(--cream); }
+    .features-header { text-align: center; margin-bottom: 3.5rem; }
+    .features-header .section-title,
+    .features-header .section-sub { max-width: 100%; margin-inline: auto; }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 2rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.2s;
+    }
+    .feature-card.visible { opacity: 1; transform: none; }
+    .feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+    .feature-icon {
+      width: 48px; height: 48px; border-radius: 10px;
+      background: rgba(26,107,60,0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; margin-bottom: 1.2rem;
+    }
+    .feature-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem; margin-bottom: 0.6rem;
+    }
+    .feature-card p { color: var(--muted); font-size: 0.92rem; line-height: 1.65; }
+
+    /* ── HOW IT WORKS ── */
+    .how { background: #fff; }
+    .how-layout {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+    }
+    .steps { display: flex; flex-direction: column; gap: 1.8rem; margin-top: 2.5rem; }
+    .step { display: flex; gap: 1.2rem; align-items: flex-start; }
+    .step-num {
+      min-width: 36px; height: 36px; border-radius: 50%;
+      background: var(--green); color: #fff;
+      font-size: 0.85rem; font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-text h4 { font-weight: 600; margin-bottom: 0.3rem; }
+    .step-text p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+    .chat-mockup {
+      background: var(--cream); border: 1px solid var(--border);
+      border-radius: 16px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.07);
+    }
+    .chat-header {
+      display: flex; align-items: center; gap: 0.7rem;
+      padding-bottom: 1rem; border-bottom: 1px solid var(--border);
+    }
+    .chat-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--green); display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+    }
+    .chat-title { font-weight: 600; font-size: 0.95rem; }
+    .chat-status { font-size: 0.75rem; color: var(--green); }
+    .bubble {
+      max-width: 85%; padding: 0.75rem 1rem;
+      border-radius: 12px; font-size: 0.88rem; line-height: 1.55;
+    }
+    .bubble.user {
+      background: var(--green); color: #fff;
+      border-bottom-right-radius: 4px; align-self: flex-end;
+    }
+    .bubble.bot {
+      background: #fff; color: var(--ink);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 4px; align-self: flex-start;
+    }
+    .bubble-row { display: flex; }
+    .bubble-row.right { justify-content: flex-end; }
+    .source-tag {
+      font-size: 0.75rem; color: var(--green);
+      background: rgba(26,107,60,0.08);
+      padding: 0.3rem 0.7rem; border-radius: 100px;
+      display: inline-block; margin-top: 0.5rem;
+    }
+
+    /* ── EXAMPLES ── */
+    .examples-section { background: var(--cream); }
+    .examples-header { text-align: center; margin-bottom: 3rem; }
+    .examples-header .section-title { margin-inline: auto; }
+    .questions-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem; max-width: 900px; margin-inline: auto;
+    }
+    .question-chip {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.1rem 1.3rem;
+      font-size: 0.9rem; color: var(--ink); cursor: pointer;
+      transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+      display: flex; align-items: flex-start; gap: 0.6rem;
+    }
+    .question-chip:hover {
+      border-color: var(--green); transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(26,107,60,0.1);
+    }
+    .question-chip .q-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── TECH STACK ── */
+    .tech { background: #fff; }
+    .tech-header { text-align: center; margin-bottom: 3rem; }
+    .tech-header .section-title { margin-inline: auto; }
+    .tech-pills {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 0.8rem;
+      max-width: 700px; margin-inline: auto;
+    }
+    .tech-pill {
+      background: var(--cream); border: 1px solid var(--border);
+      border-radius: 100px; padding: 0.55rem 1.2rem;
+      font-size: 0.88rem; font-weight: 500; color: var(--ink);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .tech-pill:hover { border-color: var(--green); color: var(--green); }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: var(--green);
+      text-align: center; padding: 5rem 2rem;
+      position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: '⚖️';
+      position: absolute; font-size: 18rem; opacity: 0.05;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .cta-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: #fff; margin-bottom: 1rem;
+    }
+    .cta-section p { color: rgba(255,255,255,0.75); font-size: 1rem; margin-bottom: 2rem; }
+    .btn-white {
+      background: #fff; color: var(--green);
+      padding: 0.9rem 2.2rem; border-radius: 8px;
+      text-decoration: none; font-weight: 600; font-size: 1rem;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      transition: transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.25); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink); color: rgba(255,255,255,0.5);
+      text-align: center; padding: 2rem;
+      font-size: 0.85rem;
+    }
+    footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
+    footer a:hover { color: #fff; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-5px); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.2rem; }
+      .nav-links { display: none; }
+      .how-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+      .stat { min-width: 140px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <span class="flag">🇧🇩</span> AinAware
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#examples">Examples</a></li>
+    <li><a href="#tech">Tech</a></li>
+  </ul>
+  <a href="https://huggingface.co/spaces/goldphish2209/AinAware__Bangladeshi_Paralegal_Chatbot" target="_blank" class="nav-cta">Open Chatbot →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">⚖️ Powered by LLaMA 3.3 70B + RAG</div>
+    <h1>Your <span>Bangladeshi</span><br/>Legal Assistant</h1>
+    <p class="hero-sub">Ask questions about Bangladeshi laws in plain language. Get accurate, context-grounded answers instantly — no lawyer required.</p>
+    <div class="hero-actions">
+      <a href="https://huggingface.co/spaces/goldphish2209/AinAware__Bangladeshi_Paralegal_Chatbot" target="_blank" class="btn-primary">💬 Start Chatting</a>
+      <a href="#how" class="btn-secondary">How it works</a>
+    </div>
+    <div class="hero-scroll">
+      <span>Scroll to explore</span>
+      <div class="scroll-dot"></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="stat-number">70B</div><div class="stat-label">Parameter LLM</div></div>
+  <div class="stat"><div class="stat-number">RAG</div><div class="stat-label">Retrieval Augmented</div></div>
+  <div class="stat"><div class="stat-number">FAISS</div><div class="stat-label">Vector Search</div></div>
+  <div class="stat"><div class="stat-number">Free</div><div class="stat-label">No signup needed</div></div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-header">
+      <div class="section-label">Features</div>
+      <h2 class="section-title">Everything you need to understand your rights</h2>
+      <p class="section-sub">Built for everyday Bangladeshis who need clear, reliable legal information without expensive consultations.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📄</div>
+        <h3>Source Citations</h3>
+        <p>Every answer includes the exact page references from the legal documents it was based on, so you can verify the information yourself.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🧠</div>
+        <h3>Context-Aware Answers</h3>
+        <p>The chatbot remembers your last few messages, so you can ask follow-up questions naturally without repeating yourself.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>Semantic Search</h3>
+        <p>Uses advanced embedding-based retrieval to find the most relevant legal passages — not just keyword matches.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <h3>Stays On Topic</h3>
+        <p>Carefully designed to only answer questions grounded in Bangladeshi law, avoiding hallucinations or out-of-scope responses.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Fast Responses</h3>
+        <p>Powered by Groq's inference engine for near-instant responses, even with a 70B parameter model under the hood.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌐</div>
+        <h3>Accessible Anywhere</h3>
+        <p>Runs entirely in your browser via Hugging Face Spaces. No installation, no account, no cost.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="how-layout">
+      <div>
+        <div class="section-label">How it works</div>
+        <h2 class="section-title">Smart retrieval, not just a search bar</h2>
+        <p class="section-sub">AinAware uses a Retrieval-Augmented Generation pipeline to ground every answer in real Bangladeshi legal text.</p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-text">
+              <h4>You ask a question</h4>
+              <p>Type your legal question in plain English. No legal jargon needed.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-text">
+              <h4>Relevant law is retrieved</h4>
+              <p>FAISS vector search finds the top 5 most relevant passages from the Bangladeshi legal corpus.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-text">
+              <h4>LLaMA 3.3 generates the answer</h4>
+              <p>The 70B model reads the retrieved passages and crafts a clear, accurate answer with page citations.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="chat-mockup">
+        <div class="chat-header">
+          <div class="chat-avatar">⚖️</div>
+          <div>
+            <div class="chat-title">AinAware</div>
+            <div class="chat-status">● Online</div>
+          </div>
+        </div>
+        <div class="bubble-row right">
+          <div class="bubble user">What are my rights if I am arrested?</div>
+        </div>
+        <div class="bubble-row">
+          <div class="bubble bot">
+            Under the Code of Criminal Procedure, you have the right to be informed of the grounds of arrest, the right to consult a lawyer of your choice, and the right to be produced before a magistrate within 24 hours.
+            <br/><span class="source-tag">📄 Page 43 | Page 71</span>
+          </div>
+        </div>
+        <div class="bubble-row right">
+          <div class="bubble user">Can I get bail?</div>
+        </div>
+        <div class="bubble-row">
+          <div class="bubble bot">
+            Yes. Bail depends on whether the offence is bailable or non-bailable. For bailable offences, bail is a right. For non-bailable offences, it is at the court's discretion.
+            <br/><span class="source-tag">📄 Page 88</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXAMPLE QUESTIONS -->
+<section class="examples-section" id="examples">
+  <div class="container">
+    <div class="examples-header">
+      <div class="section-label">Try asking</div>
+      <h2 class="section-title">Common questions people ask</h2>
+    </div>
+    <div class="questions-grid">
+      <div class="question-chip" onclick="window.open('https://huggingface.co/spaces/goldphish2209/AinAware__Bangladeshi_Paralegal_Chatbot','_blank')">
+        <span class="q-icon">🔒</span> What are my rights if I am arrested?
+      </div>
+      <div class="question-chip" onclick="window.open('https://huggingface.co/spaces/goldphish2209/AinAware__Bangladeshi_Paralegal_Chatbot','_blank')">
+        <span class="q-icon">⚖️</span> How do I file a case in court?
+      </div>
+      <div class="question-chip" onclick="window.open('https://huggingface.co/spaces/goldphish2209/AinAware__Bangladeshi_Paralegal_Chatbot','_blank')">
+        <span class="q-icon">🏠</span> What are tenant rights in Bangladesh?
+      </div>
+      <div class="question-chip" onclick="window.open('https://huggingface.co/spaces/goldphish2209/AinAware__Bangladeshi_Paralegal_Chatbot','_blank')">
+        <span class="q-icon">💼</span> What is the punishment for theft?
+      </div>
+      <div class="question-chip" onclick="window.open('https://huggingface.co/spaces/goldphish2209/AinAware__Bangladeshi_Paralegal_Chatbot','_blank')">
+        <span class="q-icon">👨‍👩‍👧</span> How does divorce work under Bangladeshi law?
+      </div>
+      <div class="question-chip" onclick="window.open('https://huggingface.co/spaces/goldphish2209/AinAware__Bangladeshi_Paralegal_Chatbot','_blank')">
+        <span class="q-icon">📝</span> How do I register a business?
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section class="tech" id="tech">
+  <div class="container">
+    <div class="tech-header">
+      <div class="section-label">Tech Stack</div>
+      <h2 class="section-title">Built with modern AI infrastructure</h2>
+    </div>
+    <div class="tech-pills">
+      <span class="tech-pill">🦜 LangChain</span>
+      <span class="tech-pill">🤖 LLaMA 3.3 70B</span>
+      <span class="tech-pill">⚡ Groq Inference</span>
+      <span class="tech-pill">🗄️ FAISS Vector Store</span>
+      <span class="tech-pill">🤗 HuggingFace Embeddings</span>
+      <span class="tech-pill">📐 Semantic Chunking</span>
+      <span class="tech-pill">🎨 Gradio UI</span>
+      <span class="tech-pill">🐍 Python</span>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>Know your rights today.</h2>
+  <p>Free, instant, and grounded in real Bangladeshi law.</p>
+  <a href="https://huggingface.co/spaces/goldphish2209/AinAware__Bangladeshi_Paralegal_Chatbot" target="_blank" class="btn-white">💬 Open AinAware →</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Built with ❤️ for Bangladesh &nbsp;·&nbsp; <a href="https://huggingface.co/spaces/goldphish2209/AinAware__Bangladeshi_Paralegal_Chatbot" target="_blank">Hugging Face Space</a> &nbsp;·&nbsp; Not a substitute for professional legal advice.</p>
+</footer>
+
+<script>
+  // Intersection Observer for scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.stat, .feature-card').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
