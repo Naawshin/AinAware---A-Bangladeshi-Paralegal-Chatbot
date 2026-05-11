@@ -11,7 +11,7 @@ import dotenv
 
 dotenv.load_dotenv()
   
-loader = PyPDFLoader('data/bd_laws_merged.pdf')
+loader = PyPDFLoader('data/bd_laws.pdf')
 docs = loader.load()
 
 embeddings = HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2')

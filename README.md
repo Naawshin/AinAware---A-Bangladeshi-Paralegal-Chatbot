@@ -2,13 +2,15 @@
 
 > A Retrieval-Augmented Generation (RAG) powered legal assistant that makes Bangladeshi law accessible to the general public in plain, simple language.
 
-**Live Demo:** [Hugging Face Space](https://huggingface.co/spaces/goldphish2209/AinAware__Bangladeshi_Paralegal_Chatbot) &nbsp;·&nbsp; **Website:** [GitHub Pages](https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPO)
+**Live Demo:** [Hugging Face Space](https://huggingface.co/spaces/goldphish2209/AinAware__Bangladeshi_Paralegal_Chatbot)
+
+**Website:** [GitHub Pages](https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPO)
 
 ---
 
 ## Overview
 
-AinAware is an AI-powered paralegal chatbot designed to bridge the gap between complex Bangladeshi legal texts and the everyday citizen. Users can ask questions about their rights, court procedures, family law, property disputes, and more — and receive clear, cited answers grounded in real legal documents.
+AinAware is an AI-powered paralegal chatbot designed to bridge the gap between complex Bangladeshi laws and the everyday citizen. Users can ask questions about their rights, court procedures, family law, property disputes, and more — and receive clear, cited answers grounded in real legal documents. **The motto of this project is to make the people more aware of their rights and make legal information more accessible.**
 
 The system achieves a **RAGAS Faithfulness score of 1.00**, meaning every generated answer is fully supported by the retrieved legal context with no hallucination.
 
@@ -30,10 +32,10 @@ The system achieves a **RAGAS Faithfulness score of 1.00**, meaning every genera
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)
 ![HuggingFace](https://img.shields.io/badge/HuggingFace-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black)
+![FAISS](https://img.shields.io/badge/FAISS-00599C?style=for-the-badge&logo=meta&logoColor=white)
 ![Gradio](https://img.shields.io/badge/Gradio-F97316?style=for-the-badge&logo=gradio&logoColor=white)
 ![Meta](https://img.shields.io/badge/LLaMA_3.3_70B-0467DF?style=for-the-badge&logo=meta&logoColor=white)
 ![Groq](https://img.shields.io/badge/Groq-F55036?style=for-the-badge&logo=groq&logoColor=white)
-![FAISS](https://img.shields.io/badge/FAISS-00599C?style=for-the-badge&logo=meta&logoColor=white)
 ![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-222222?style=for-the-badge&logo=github&logoColor=white)
 
 | Component | Technology |
@@ -63,7 +65,7 @@ User Question
  Retriever (FAISS)
  ┌────────────────────────────────┐
  │  Semantic Chunks + Embeddings  │
- │  (bd_laws_merged.pdf)          │
+ │  (bd_laws.pdf)          │
  └────────────────────────────────┘
       │  Top-5 relevant passages
       ▼
@@ -97,7 +99,7 @@ A faithfulness score of 1.00 means all claims in the generated answers are fully
 ├── app.py                  # Main Gradio application
 ├── requirements.txt        # Python dependencies
 ├── data/
-│   └── bd_laws_merged.pdf  # Bangladeshi legal corpus (tracked via Git LFS)
+│   └── bd_laws.pdf  # Bangladeshi legal corpus (tracked via Git LFS)
 ├── faiss_index/
 │   ├── index.faiss         # FAISS vector index (tracked via Git LFS)
 │   └── index.pkl           # Document metadata mappings
