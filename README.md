@@ -2,7 +2,14 @@
 
 > A Retrieval-Augmented Generation (RAG) powered legal assistant that makes Bangladeshi law accessible to the general public in plain, simple language.
 
+<p align="center">
+  <img src="image-1.png" alt="AinAware Screenshot"/>
+  <br/>
+</p>
+
 **Live Demo:** [Hugging Face Space](https://huggingface.co/spaces/goldphish2209/AinAware__Bangladeshi_Paralegal_Chatbot)
+
+
 
 **Website:** [GitHub Pages](https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPO)
 
@@ -115,13 +122,13 @@ A faithfulness score of 1.00 means all claims in the generated answers are fully
 ### Prerequisites
 
 - Python 3.10+
-- A [Groq API key](https://console.groq.com/)
+- A [Groq API key](https://console.groq.com/) (I used Groq but you can use anything befitting)
 
 ### Installation
 
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO.git
-cd YOUR_REPO
+git clone https://github.com/Naawshin/AinAware---A-Bangladeshi-Paralegal-Chatbot.git
+cd AinAware---A-Bangladeshi-Paralegal-Chatbot
 
 # Install dependencies
 pip install -r requirements.txt
@@ -137,10 +144,17 @@ python app.py
 ```
 
 The Gradio interface will launch at `http://localhost:7860`.
+<p align="center">
+  <img src="image.png" alt="AinAware Screenshot" width="700"/>
+  <br/>
+  <em>Gradio Chatbot Interface</em>
+</p>
 
 ### Rebuild the FAISS Index (optional)
 
-If you want to re-index with a different PDF, update the path in `app.py` and re-run. The index files will be regenerated automatically.
+If you want to re-index with a different PDF, update the path in `app.py`,uncomment the semantic chunker, load from the documents and re-run. The index files will be regenerated automatically. Make sure to comment out or remove the faiss.load_local option. However, it is advised to use pre downloaded index so it won't take up time splitting and embedding the document every time the app starts.   
+
+use `vector_store.save_local("index file name")` to save the index file for local loading.
 
 ---
 
@@ -175,19 +189,25 @@ ragas
 
 ## Limitations
 
-- AinAware is limited to the content of the provided legal corpus (`bd_laws_merged.pdf`). It will not answer questions outside this scope.
+- AinAware is limited to the content of the provided legal corpus (`bd_laws.pdf`). It will not answer questions outside this scope.
 - This tool provides **general legal information only** and is not a substitute for advice from a qualified lawyer.
 - Laws may have been amended after the document was compiled. Always verify with an up-to-date source for critical matters.
 
 ---
-
 ## Author
 
-**Nowshin Tabasum**
-[GitHub](https://github.com/YOUR_GITHUB_USERNAME) &nbsp;·&nbsp; [Email](mailto:YOUR_EMAIL@example.com)
+**Nowshin Tabasum** | AI Engineer
+
+</div>
 
 ---
 
+**🔗 Connect with me:**
+
+[![GitHub](https://img.shields.io/badge/GitHub-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/YOUR_GITHUB_USERNAME)
+[![Email](https://img.shields.io/badge/Email-nowshintabasum004@gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:nowshintabasum004@gmail.com)
+
+---
 ## License
 
 This project is for educational purposes. The underlying legal documents belong to the Government of Bangladesh.
