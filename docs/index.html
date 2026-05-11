@@ -248,42 +248,42 @@
     </div>
     <div class="faq-list">
       <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
+        <button class="faq-q" >
           Is AinAware free to use?
           <span class="faq-arrow">▾</span>
         </button>
         <div class="faq-a">Yes, completely free. No account, no subscription, no hidden fees. Just open the chatbot and start asking.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
+        <button class="faq-q" >
           Can I use this as legal advice in court?
           <span class="faq-arrow">▾</span>
         </button>
         <div class="faq-a">No. AinAware provides general legal information only. It is not a substitute for professional legal advice from a qualified lawyer. For serious legal matters, always consult a licensed attorney.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
+        <button class="faq-q" >
           What laws does AinAware cover?
           <span class="faq-arrow">▾</span>
         </button>
         <div class="faq-a">AinAware is trained on a corpus of Bangladeshi legal documents covering criminal law, civil procedure, family law, property law, labour law, and more. It will tell you if a question falls outside what it can answer.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
+        <button class="faq-q" >
           How accurate are the answers?
           <span class="faq-arrow">▾</span>
         </button>
         <div class="faq-a">Answers are grounded in real legal documents and include page citations so you can verify them. That said, laws can change and context matters — always cross-check important information with a lawyer.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
+        <button class="faq-q" >
           Can I ask follow-up questions?
           <span class="faq-arrow">▾</span>
         </button>
         <div class="faq-a">Yes. AinAware remembers your recent conversation, so you can ask follow-up questions naturally without repeating yourself each time.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
+        <button class="faq-q" >
           Does it work on mobile?
           <span class="faq-arrow">▾</span>
         </button>
@@ -328,18 +328,20 @@
   }, { threshold: 0.15 });
   document.querySelectorAll('.stat, .feature-card').forEach(el => observer.observe(el));
 
-  function toggleFaq(btn) {
-    const answer = btn.nextElementSibling;
-    const isOpen = btn.classList.contains('open');
-    document.querySelectorAll('.faq-q.open').forEach(b => {
-      b.classList.remove('open');
-      b.nextElementSibling.classList.remove('open');
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const answer = this.nextElementSibling;
+      const isOpen = this.classList.contains('open');
+      document.querySelectorAll('.faq-q.open').forEach(b => {
+        b.classList.remove('open');
+        b.nextElementSibling.classList.remove('open');
+      });
+      if (!isOpen) {
+        this.classList.add('open');
+        answer.classList.add('open');
+      }
     });
-    if (!isOpen) {
-      btn.classList.add('open');
-      answer.classList.add('open');
-    }
-  }
+  });
 </script>
 </body>
 </html>
